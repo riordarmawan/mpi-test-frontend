@@ -1,24 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Card } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { ListPhoto } from './components/ListPhoto';
+import NavbarComponents from './components/NavbarComponents';
+import { PhotosState } from './photosReducer';
 
 function App() {
+  const photos = useSelector<PhotosState, PhotosState['photos']>(
+    (state) => state.photos
+  );
+
+  const dispatch = useDispatch();
+
+  const addPhoto = (photo: string) => {
+    dispatch({ type: 'ADD_PHOTO', payload: photo });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavbarComponents />
+      <ListPhoto addPhoto={addPhoto} />
+      {photos.map((photo) => {
+        return (
+          <div className="card-photo-list" key={photo}>
+            <Card
+              className="card-photo"
+              style={{ width: '58rem', height: '10rem' }}
+            >
+              <Card.Img variant="top" src={'img/' + { photo }} />
+              <Card.Body>
+                <Card.Title>Link : {photo}</Card.Title>
+              </Card.Body>
+            </Card>
+          </div>
+        );
+      })}
     </div>
   );
 }
